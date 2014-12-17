@@ -18,7 +18,7 @@ Supported rendering backends:
 
 Supported HMD:
 
- * OculusVR (0.4.3)
+ * OculusVR (0.4.4)
 
 Supported platforms:
 
@@ -82,6 +82,8 @@ examples your current directory should be examples/runtime.
 ### [00-helloworld](https://github.com/bkaradzic/bgfx/blob/master/examples/00-helloworld)
 
 Initialization and debug text.
+
+![example-00-helloworld](https://github.com/bkaradzic/bgfx/raw/master/examples/00-helloworld/screenshot.png)
 
 ### [01-cubes](https://github.com/bkaradzic/bgfx/blob/master/examples/01-cubes/cubes.cpp)
 
@@ -181,9 +183,11 @@ draw calls per frame.
 
 | CPU          | Renderer     | GPU       |Compiler| Arch | OS         | Dim | Calls |
 |:-------------|:-------------|:----------|:------:|:----:|:----------:|----:|------:|
+| i7-4790K 4.0 | DX9          | GTX970    | VS2013 | x64  | Windows10  |  40 | 64000+|
 | i5-3570 3.8  | NV 331.49    | GTX560Ti  | GCC    | x64  | Linux      |  40 | 64000+|
 | i7-920 2.66  | GL2.1        | GTX650Ti  | VS2008 | x64  | Windows7   |  38 | 54872 |
 | i7-920 2.66  | GL2.1        | GTX650Ti  | VS2008 | x86  | Windows7   |  38 | 54872 |
+| i7-4790K 4.0 | DX11         | GTX970    | VS2013 | x64  | Windows10  |  33 | 35937 |
 | i7-920 2.66  | DX9          | GTX650Ti  | GCC    | x64  | Windows7   |  32 | 32768 |
 | i7-920 2.66  | DX9          | GTX650Ti  | VS2008 | x64  | Windows7   |  32 | 32768 |
 | i7-920 2.66  | DX9          | GTX650Ti  | GCC    | x86  | Windows7   |  30 | 27000 |
@@ -391,6 +395,28 @@ Configuration is `<platform>-<debug/release>[32/64]`. For example:
 	linux-release32, nacl-debug64, nacl-arm-debug, pnacl-release, 
 	android-release, etc.
 
+OculusVR integration
+--------------------
+
+OculusVR support is currently experimental, and only DX11 is tested. To build
+with OculusVR HDM support enabled you must set `OVR_DIR` enviroment variable:
+
+	set OVR_DIR=<path to OculusSDK>
+
+And generate project files with `--with-ovr` option:
+
+	genie --with-ovr vs2012
+
+In `LibOVR/Include` create trampoline headers `OVR_D3D.h` and `OVR_GL.h`.
+
+`OVR_D3D.h` should contain:
+
+	#include "../Src/OVR_CAPI_D3D.h"
+
+`OVR_GL.h` should contain:
+
+	#include "../Src/OVR_CAPI_GL.h"
+
 Internals
 ---------
 
@@ -440,10 +466,10 @@ Debugging and Profiling
 
 ### RenderDoc
 
-Loading of RenderDoc is integrated in bgfx when using DX11 renderer. You can
-drop in `renderdoc.dll` from RenderDoc distribution into working directory,
-and it will be automatically loaded during bgfx initialization. This allows
-frame capture at any time by pressing **F11**.
+Loading of RenderDoc is integrated in bgfx when using DX11 or OpenGL renderer.
+You can drop in `renderdoc.dll` from RenderDoc distribution into working
+directory, and it will be automatically loaded during bgfx initialization. This
+allows frame capture at any time by pressing **F11**.
 
 Download: [RenderDoc](https://renderdoc.org/builds)
 
@@ -464,7 +490,7 @@ Other debuggers:
 | IntelGPA  | Linux/OSX/Win |   x  |  x   |      |   x  |        |
 | Nsight    | Win           |   x  |  x   |  x   |      |        |
 | PerfHUD   | Win           |   x  |  x   |      |      |        |
-| RenderDoc | Win           |      |  x   |      |      |    x   |
+| RenderDoc | Win           |      |  x   |  x   |      |    x   |
 | vogl      | Linux         |      |      |  x   |      |    x   |
 
 Download:  
@@ -499,7 +525,9 @@ Using bgfx with SDL example:
 	    bgfx::init();
 
 **NOTE** You can use `--with-sdl` when runnning GENie to enable SDL2 integration
-with examples.
+with examples:
+
+	genie --with-sdl vs2012
 
 Tools
 -----
@@ -681,7 +709,7 @@ Contributors
 Garett Bass ([@gtbass](https://github.com/gtbass)) - OSX port.  
 Jeremie Roy ([@jeremieroy](https://github.com/jeremieroy)) - Font system and
   examples.  
-Milos Tosic ([@milostosic](https://github.com/milostosic)) - 12-lod example.  
+Miloš Tošić ([@milostosic](https://github.com/milostosic)) - 12-lod example.  
 Dario Manesku ([@dariomanesku](https://github.com/dariomanesku)) - 13-stencil, 
   14-shadowvolumes, 15-shadowmaps-simple, 16-shadowmaps, 18-ibl  
 James Gray ([@james4k](https://github.com/james4k)) - Go language API bindings.  

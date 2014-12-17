@@ -48,7 +48,7 @@ namespace bgfx
 			case ovrRenderAPI_D3D9:
 				{
 					ovrD3D9ConfigData* data = (ovrD3D9ConfigData*)_config;
-					m_rtSize = data->Header.RTSize;
+					m_rtSize = data->Header.BackBufferSize;
 				}
 				break;
 #endif // BGFX_CONFIG_RENDERER_DIRECT3D9
@@ -57,7 +57,7 @@ namespace bgfx
 			case ovrRenderAPI_D3D11:
 				{
 					ovrD3D11ConfigData* data = (ovrD3D11ConfigData*)_config;
-					m_rtSize = data->Header.RTSize;
+					m_rtSize = data->Header.BackBufferSize;
 				}
 				break;
 #endif // BGFX_CONFIG_RENDERER_DIRECT3D11
@@ -66,7 +66,7 @@ namespace bgfx
 			case ovrRenderAPI_OpenGL:
 				{
 					ovrGLConfigData* data = (ovrGLConfigData*)_config;
-					m_rtSize = data->Header.RTSize;
+					m_rtSize = data->Header.BackBufferSize;
 				}
 				break;
 #endif // BGFX_CONFIG_RENDERER_OPENGL
@@ -140,14 +140,14 @@ ovrError:
 		ovrSizei sizeL = ovrHmd_GetFovTextureSize(m_hmd, ovrEye_Left,  m_hmd->DefaultEyeFov[0], 1.0f);
 		ovrSizei sizeR = ovrHmd_GetFovTextureSize(m_hmd, ovrEye_Right, m_hmd->DefaultEyeFov[1], 1.0f);
 		m_rtSize.w = sizeL.w + sizeR.w;
-		m_rtSize.h = max(sizeL.h, sizeR.h);
+		m_rtSize.h = bx::uint32_max(sizeL.h, sizeR.h);
 
 		m_warning = true;
 
 		return true;
 	}
 
-	void OVR::postReset(ovrTexture _texture)
+	void OVR::postReset(const ovrTexture& _texture)
 	{
 		if (NULL != m_hmd)
 		{
